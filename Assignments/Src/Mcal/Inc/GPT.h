@@ -15,6 +15,7 @@
  * INCLUDES
  *********************************************************************************************************************/
 #include "GPT_Types.h"
+#include "GPT_Cfg.h"
 
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
@@ -39,17 +40,25 @@
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
-void GPT_Init(const Gpt_ConfigType* ConfigPtr);
+void GPT_Init(const GPT_ConfigType* ConfigPtr);
 
 void GPT_DisableNotification(GPT_ChannelType Channel);
 
-void GPT_EnableNotification(GPT_ChannelType Channel);
+void GPT_EnableNotification(GPT_ChannelType Channel, GPT_Notification CallBack);
+
+GPT_ValueType Gpt_GetTimeElapsed( GPT_ChannelType Channel );
 
 void GPT_StartTimer(GPT_ChannelType Channel, GPT_ValueType Value);
 
 void GPT_StopTimer(GPT_ChannelType Channel);
 
-void _GPT_Notification_<A0> (void);
+void TIMER0A_Handler(void);
+void TIMER1A_Handler(void);
+void TIMER2A_Handler(void);
+void TIMER3A_Handler(void);
+void TIMER4A_Handler(void);
+void TIMER5A_Handler(void);
+
 
 #endif  /* FILE_NAME_H */
 

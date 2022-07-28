@@ -29,18 +29,18 @@
  *********************************************************************************************************************/
 typedef enum
 {
-
-    GPT_ChannelA0,
-    GPT_ChannelA1,
-    GPT_ChannelA2,
-    GPT_ChannelA3,
-    GPT_ChannelA4,
-    GPT_ChannelA5,
-    GPT_ChannelB0,
-    GPT_ChannelB1,
-    GPT_ChannelB2,
-    GPT_ChannelB3,
-    GPT_ChannelB4
+    GPT_16_32_BitTimer0,
+    GPT_16_32_BitTimer1,
+    GPT_16_32_BitTimer2,
+    GPT_16_32_BitTimer3,
+    GPT_16_32_BitTimer4,
+    GPT_16_32_BitTimer5,
+    GPT_32_64_BitWideTimer0,
+    GPT_32_64_BitWideTimer1,
+    GPT_32_64_BitWideTimer2,
+    GPT_32_64_BitWideTimer3,
+    GPT_32_64_BitWideTimer4,
+    GPT_32_64_BitWideTimer5
 
 } GPT_ChannelType;
 
@@ -77,8 +77,6 @@ typedef struct
     GPT_ChannelTickFrequency ChannelTickFrequency;
     GPT_ChannelTickValueMax ChannelTickValueMax;
     GPT_ChannelMode ChannelMode;
-    GPT_Notification Gpt_Notification;
-
 } GPT_ConfigType;
 
 /**********************************************************************************************************************

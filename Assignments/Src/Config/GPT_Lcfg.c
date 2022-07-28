@@ -29,8 +29,8 @@
  *********************************************************************************************************************/
 const GPT_ConfigType GPT_Config_Array[NUM_ACTIVE_TIMERS]=
 {
-    {GPT_ChannelA0,700,100,GPT_ModeOneShot,Timer1_Notification},
-    {GPT_ChannelA1,500,50,GPT_ModeContinuous,NULL_PTR},
+    
+    {GPT_16_32_BitTimer1,500000,50,GPT_ModeContinuous}
 
 };
 /**********************************************************************************************************************

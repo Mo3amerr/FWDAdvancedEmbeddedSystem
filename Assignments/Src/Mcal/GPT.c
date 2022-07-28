@@ -15,8 +15,9 @@
 #include "Std_Types.h"
 #include "Mcu_Hw.h"
 #include "GPT_Types.h"
-#include "GPT.h"
+
 #include "GPT_Cfg.h"
+#include "GPT.h"
 
 /**********************************************************************************************************************
  *  LOCAL MACROS CONSTANT\FUNCTION
@@ -40,7 +41,8 @@ static const uint32 Gpt_BaseAddress[MAX_NUM_OF_GPIO_GPT] = {GPT_16_32_BIT_TIMER0
 /**********************************************************************************************************************
  *  GLOBAL DATA
  *********************************************************************************************************************/
-
+GPT_Notification	locGptNotification[MAX_NUM_OF_GPIO_GPT];
+static const GPT_ConfigType*			globalGptConfig;
 /**********************************************************************************************************************
  *  LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
@@ -73,15 +75,15 @@ void GPT_Init(const GPT_ConfigType *ConfigPtr)
 	GPT_ChannelMode								locChannelMode;
 	GPT_ChannelTickFrequency 	locChannelTickFreq;
 	GPT_ChannelTickValueMax  	locChannelTickMaxValue;
+	globalGptConfig = ConfigPtr;
 	
 	for(i=0;i<NUM_ACTIVE_TIMERS;i++)
 	{
-		locChannel								= ConfigPtr[i].channel;
-		locChannelTickFreq				= ConfigPtr[i].channelTickFreq;
-		locChannelTickMaxValue		= ConfigPtr[i].channelTickMaxValue;
-		locChannelMode						= ConfigPtr[i].channelMode;
+		locChannel								= ConfigPtr[i].ChannelType;
+		locChannelTickFreq				= ConfigPtr[i].ChannelTickFrequency;
+		locChannelTickMaxValue		= ConfigPtr[i].ChannelTickValueMax;
+		locChannelMode						= ConfigPtr[i].ChannelMode;
 		
-		locGptNotification[locChannel]= ConfigPtr[i].gptNotification;
 		
 		gptBaseAddress = Gpt_BaseAddress[locChannel];
 
@@ -92,10 +94,10 @@ void GPT_Init(const GPT_ConfigType *ConfigPtr)
 		* For a 16/32-bit timer, this value selects the 16-bit timer configuration.
 		* For a 32/64-bit wide timer, this value selects the 32-bit timer configuration.
 		*/
-		GPTMCFG(gptBaseAddress) = 0x4;
+		GPTMCFG(gptBaseAddress) = 0x0;
 		
-		/* counting up */
-		GPTMTAMR(gptBaseAddress) |= (1<<TACDIR);
+		/* counting down */
+		GPTMTAMR(gptBaseAddress) &= ~(1<<TACDIR);
 		
 		/* channel mode */
 		if (locChannelMode == GPT_ModeOneShot)
@@ -108,7 +110,7 @@ void GPT_Init(const GPT_ConfigType *ConfigPtr)
 		}
 		
 		/* Disablling interupt notifation */
-		Gpt_DisableNotification(locChannel);
+		GPT_DisableNotification(locChannel);
 	}
 
 
@@ -143,12 +145,14 @@ void GPT_DisableNotification(GPT_ChannelType Channel)
  * \Return value:   : Std_ReturnType  E_OK
  *                                    E_NOT_OK
  *******************************************************************************/
-void GPT_EnableNotification(GPT_ChannelType Channel)
+void GPT_EnableNotification(GPT_ChannelType Channel, GPT_Notification CallBack)
 {
 
     uint32 gptBaseAddress;
+	locGptNotification[Channel] = CallBack;
     gptBaseAddress = Gpt_BaseAddress[Channel];
     GPTMIMR(gptBaseAddress) = 0x1;
+	
 }
 
 
@@ -177,10 +181,10 @@ GPT_ValueType Gpt_GetTimeElapsed( GPT_ChannelType Channel )
 	gptBaseAddress = Gpt_BaseAddress[Channel];
 	for(i=0;i<MAX_NUM_OF_GPIO_GPT;i++)
 	{
-		if (globalGptConfig[i].channel == Channel)
+		if (globalGptConfig[i].ChannelType == Channel)
 		{
-			locChannelTickFreq = globalGptConfig[i].channelTickFreq;
-			locChannelMaxValue = globalGptConfig[i].channelTickMaxValue;
+			locChannelTickFreq = globalGptConfig[i].ChannelTickFrequency;
+			locChannelMaxValue = globalGptConfig[i].ChannelTickValueMax;
 			
 			break;
 		}
@@ -229,9 +233,9 @@ void GPT_StartTimer(GPT_ChannelType Channel, GPT_ValueType Value)
 	gptBaseAddress = Gpt_BaseAddress[Channel];
 		for(i=0;i<MAX_NUM_OF_GPIO_GPT;i++)
 	{
-		if (globalGptConfig[i].channel == Channel)
+		if (globalGptConfig[i].ChannelType == Channel)
 		{
-			locChannelTickFreq = globalGptConfig[i].channelTickFreq;			
+			locChannelTickFreq = globalGptConfig[i].ChannelTickFrequency;			
 			break;
 		}
 	}
@@ -270,7 +274,7 @@ void GPT_StartTimer(GPT_ChannelType Channel, GPT_ValueType Value)
  * \Return value:   : Std_ReturnType  E_OK
  *                                    E_NOT_OK
  *******************************************************************************/
-void GPT_StopTimer(GPT_ChannelType Channel);
+void GPT_StopTimer(GPT_ChannelType Channel)
 {
     uint32 gptBaseAddress;
     gptBaseAddress = Gpt_BaseAddress[Channel];
@@ -282,60 +286,66 @@ void GPT_StopTimer(GPT_ChannelType Channel);
 
 void TIMER0A_Handler(void)
 {
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER0A;
-	if (locGptNotification[GPT_ChannelA0] != NULL)
+	if (locGptNotification[GPT_16_32_BitTimer0] != NULL)
 	{
-		gptNotificationFn_TIMER0A = locGptNotification[GPT_ChannelA0];
+		gptNotificationFn_TIMER0A = locGptNotification[GPT_16_32_BitTimer0];
 		gptNotificationFn_TIMER0A();
 	}
 }
 
 void TIMER1A_Handler(void)
 {
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER1A;
-	if (locGptNotification[GPT_ChannelA1] != NULL)
+	if (locGptNotification[GPT_16_32_BitTimer1] != NULL)
 	{
-		gptNotificationFn_TIMER1A = locGptNotification[GPT_ChannelA1];
+		gptNotificationFn_TIMER1A = locGptNotification[GPT_16_32_BitTimer1];
 		gptNotificationFn_TIMER1A();
 	}
 }
 
 void TIMER2A_Handler(void)
 {
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER2A;
-	if (locGptNotification[GPT_ChannelA2] != NULL)
+	if (locGptNotification[GPT_16_32_BitTimer2] != NULL)
 	{
-		gptNotificationFn_TIMER2A = locGptNotification[GPT_ChannelA2];
+		gptNotificationFn_TIMER2A = locGptNotification[GPT_16_32_BitTimer2];
 		gptNotificationFn_TIMER2A();
 	}
 }
 
 void TIMER3A_Handler(void)
 {
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER3A;
-	if (locGptNotification[GPT_ChannelA3] != NULL)
+	if (locGptNotification[GPT_16_32_BitTimer3] != NULL)
 	{
-		gptNotificationFn_TIMER3A = locGptNotification[GPT_ChannelA3];
+		gptNotificationFn_TIMER3A = locGptNotification[GPT_16_32_BitTimer3];
 		gptNotificationFn_TIMER3A();
 	}
 }
 
 void TIMER4A_Handler(void)
 {
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER4A;
-	if (locGptNotification[GPT_ChannelA4] != NULL)
+	if (locGptNotification[GPT_16_32_BitTimer4] != NULL)
 	{
-		gptNotificationFn_TIMER4A = locGptNotification[GPT_ChannelA4];
+		gptNotificationFn_TIMER4A = locGptNotification[GPT_16_32_BitTimer4];
 		gptNotificationFn_TIMER4A();
 	} 
 }
 
 void TIMER5A_Handler(void)
 {
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER5A;
-	if (locGptNotification[GPT_ChannelA5] != NULL)
+	if (locGptNotification[GPT_16_32_BitTimer5] != NULL)
 	{
-		gptNotificationFn_TIMER5A = locGptNotification[GPT_ChannelA5];
+		gptNotificationFn_TIMER5A = locGptNotification[GPT_16_32_BitTimer5];
 		gptNotificationFn_TIMER5A();
 	}
 }

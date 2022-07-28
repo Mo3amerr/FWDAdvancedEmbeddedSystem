@@ -21,6 +21,7 @@
  *********************************************************************************************************************/
 /* NULL_PTR define with a void pointer to zero definition*/
 #define NULL_PTR       ((void *)0)
+#define NULL       ((void *)0)
 
 /* INLINE  define for abstraction of the keyword inline*/
 #define INLINE         inline

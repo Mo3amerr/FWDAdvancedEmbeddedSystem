@@ -52,6 +52,7 @@ typedef union
 #define APINT                                  *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD0C))
 #define INTCTRL                                *((volatile INTCTRL_Tag*)(CORTEXM4_PERI_BASE_ADDRESS+0xD04))
 #define RCGCGPIO                                *((volatile uint32*)( 0x400FE000 +0x608))
+#define RCGCTIMER                               *((volatile uint32*)( 0x400FE000 +0x604))
 /*tHIS SECTION IS FOR System Timer (SysTick) Registers*/
 #define STCTRL                                   *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x010))
 #define STRELOAD                                 *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x014))
@@ -416,6 +417,8 @@ typedef union
 #define GPTMIMR_OFFSET					0x018
 #define GPTMTAV_OFFSET					0x050
 #define GPTMTAILR_OFFSET				0x028
+#define GPTMRIS_OFFEST                  0x01C
+#define GPTMICR_OFFSET                   0x024
 
 
 #define GPTMCFG(BaseAddr)										*((volatile uint32*)(BaseAddr+GPTMCFG_OFFSET))
@@ -425,6 +428,8 @@ typedef union
 #define GPTMIMR(BaseAddr)										*((volatile uint32*)(BaseAddr+GPTMIMR_OFFSET))
 #define GPTMTAV(BaseAddr)										*((volatile uint32*)(BaseAddr+GPTMTAV_OFFSET))
 #define GPTMTAILR(BaseAddr)									*((volatile uint32*)(BaseAddr+GPTMTAILR_OFFSET))
+#define GPTMRIS(BaseAddr)										*((volatile uint32*)(BaseAddr+GPTMRIS_OFFEST))
+#define GPTMICR(BaseAddr)										*((volatile uint32*)(BaseAddr+GPTMICR_OFFSET))
 
 #define TAEN 		0
 #define TBEN 		8

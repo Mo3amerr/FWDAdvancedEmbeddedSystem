@@ -29,7 +29,7 @@
  *********************************************************************************************************************/
 
 NVIC_ConfigType NVIC_VectorControlArray[NUMBER_OF_VECTORS]= {
-    {NVIC_GPIO_PORT_A, (1u), (0u)},
+    {NVIC_16_32_TIMER_1_A, (0u), (0u)},
     {NVIC_GPIO_PORT_B, (2u), (0u)},
     {NVIC_GPIO_PORT_C, (1u), (1u)}
 
