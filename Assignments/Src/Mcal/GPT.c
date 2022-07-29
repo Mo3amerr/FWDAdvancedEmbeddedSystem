@@ -56,15 +56,16 @@ static const GPT_ConfigType*			globalGptConfig;
  *********************************************************************************************************************/
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void GPT_Init(const GPT_ConfigType *ConfigPtr)
+ * \Description     : initialize GPT Module by parsing the Configuration 
+*                    into GPT registers 
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
+ * \Parameters (in) : ConfigPtr  >>  Pointer to array of structs that hold all the configurations needed 
+ * 						to initializes the Timers Needed to be activated
  * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Return value:   : None
  *******************************************************************************/
 void GPT_Init(const GPT_ConfigType *ConfigPtr)
 {
@@ -119,40 +120,41 @@ void GPT_Init(const GPT_ConfigType *ConfigPtr)
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void GPT_DisableNotification(GPT_ChannelType Channel)
+ * \Description     : This function disables interrupt notification on the timer desired 
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
+ * \Parameters (in) : Copy_GPTChannel >>   Type of Timer wanted to be activated
  * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Return value:   : None
  *******************************************************************************/
-void GPT_DisableNotification(GPT_ChannelType Channel)
+void GPT_DisableNotification(GPT_ChannelType Copy_GPTChannel)
 {
     uint32 gptBaseAddress;
-    gptBaseAddress = Gpt_BaseAddress[Channel];
+    gptBaseAddress = Gpt_BaseAddress[Copy_GPTChannel];
     GPTMIMR(gptBaseAddress) = 0;
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void GPT_EnableNotification(GPT_ChannelType Channel, GPT_Notification CallBack)
+ * \Description     : This function Enables interrupt notification on the timer desired 
+ * 					and attaches the callback function into the right handler to be excuted
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
+ * \Parameters (in) : Copy_GPTChannel >>   Type of Timer wanted to be activated
+ * 					 Copy_GPTCallBack >> Callback Function that will be excuted when Timer interrupt is activated
+ * 						
  * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Return value:   : None
  *******************************************************************************/
-void GPT_EnableNotification(GPT_ChannelType Channel, GPT_Notification CallBack)
+void GPT_EnableNotification(GPT_ChannelType Copy_GPTChannel, GPT_Notification Copy_GPTCallBack)
 {
 
     uint32 gptBaseAddress;
-	locGptNotification[Channel] = CallBack;
-    gptBaseAddress = Gpt_BaseAddress[Channel];
+	locGptNotification[Copy_GPTChannel] = Copy_GPTCallBack;
+    gptBaseAddress = Gpt_BaseAddress[Copy_GPTChannel];
     GPTMIMR(gptBaseAddress) = 0x1;
 	
 }
@@ -160,30 +162,31 @@ void GPT_EnableNotification(GPT_ChannelType Channel, GPT_Notification CallBack)
 
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : GPT_ValueType Gpt_GetTimeElapsed( GPT_ChannelType Channel )
+ * \Description     : This Function Returns the Value of the timer from the start 
+ * 					to indicate how much time has passed since its cycle has started
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
- * \Parameters (out): None
+ * \Parameters (in) : Copy_GPTChannel >>   Number of Timer wanted to be be time returned
+ * \Parameters (out): Loc_GPT_Value >> Value of time in the Register
  * \Return value:   : Std_ReturnType  E_OK
  *                                    E_NOT_OK
  *******************************************************************************/
 
-GPT_ValueType Gpt_GetTimeElapsed( GPT_ChannelType Channel )
+GPT_ValueType Gpt_GetTimeElapsed( GPT_ChannelType Copy_GPTChannel )
 {
-	GPT_ValueType value;
+	GPT_ValueType Loc_GPT_Value;
 	uint32 i;
 	uint32 prescale;
 	uint32 gptBaseAddress;
 	GPT_ChannelTickFrequency 	locChannelTickFreq;
 	GPT_ChannelTickValueMax  	locChannelMaxValue;
 	
-	gptBaseAddress = Gpt_BaseAddress[Channel];
+	gptBaseAddress = Gpt_BaseAddress[Copy_GPTChannel];
 	for(i=0;i<MAX_NUM_OF_GPIO_GPT;i++)
 	{
-		if (globalGptConfig[i].ChannelType == Channel)
+		if (globalGptConfig[i].ChannelType == Copy_GPTChannel)
 		{
 			locChannelTickFreq = globalGptConfig[i].ChannelTickFrequency;
 			locChannelMaxValue = globalGptConfig[i].ChannelTickValueMax;
@@ -209,33 +212,33 @@ GPT_ValueType Gpt_GetTimeElapsed( GPT_ChannelType Channel )
 			break;
 		}
 	}
-	value = (GPTMTAV(gptBaseAddress) / prescale) & locChannelMaxValue;
+	Loc_GPT_Value = (GPTMTAV(gptBaseAddress) / prescale) & locChannelMaxValue;
 	
-	return value;
+	return Loc_GPT_Value;
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void GPT_StartTimer(GPT_ChannelType Channel, GPT_ValueType Value)
+ * \Description     : This Function Stops the Timer on the TimerType desired with the specific value of time in ms
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
+ * \Parameters (in) : Copy_GPTChannel >>   Type of Timer wanted to be activated
+ * 						ValueinMs	>> Value of Desired time to pass in milliseconds
  * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Return value:   : None
  *******************************************************************************/
-void GPT_StartTimer(GPT_ChannelType Channel, GPT_ValueType Value)
+void GPT_StartTimer(GPT_ChannelType Copy_GPTChannel, GPT_ValueType Copy_GPTValueinMs)
 {
     uint32 i;
 	uint32 prescale;
 	uint32 gptBaseAddress;
 	GPT_ChannelTickFrequency 	locChannelTickFreq;
 	
-	gptBaseAddress = Gpt_BaseAddress[Channel];
+	gptBaseAddress = Gpt_BaseAddress[Copy_GPTChannel];
 		for(i=0;i<MAX_NUM_OF_GPIO_GPT;i++)
 	{
-		if (globalGptConfig[i].ChannelType == Channel)
+		if (globalGptConfig[i].ChannelType == Copy_GPTChannel)
 		{
 			locChannelTickFreq = globalGptConfig[i].ChannelTickFrequency;			
 			break;
@@ -243,47 +246,49 @@ void GPT_StartTimer(GPT_ChannelType Channel, GPT_ValueType Value)
 	}
 	
 	/* adding the value deppending on the freq required */
-	GPTMTAILR(gptBaseAddress) = Value*16000;
+	GPTMTAILR(gptBaseAddress) = (Copy_GPTValueinMs*((16000000-1)/1000));
 	
 	GPTMCTL(gptBaseAddress) |= (1<<TAEN);
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void GPT_StopTimer(GPT_ChannelType Channel)
+ * \Description     : This Function Stops the Timer on the TimerType desired
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
+ * \Parameters (in) : Copy_GPTChannel >>   Number of Timer wanted to be stopped
  * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Return value:   : None
  *******************************************************************************/
-void GPT_StopTimer(GPT_ChannelType Channel)
+void GPT_StopTimer(GPT_ChannelType Copy_GPTChannel)
 {
     uint32 gptBaseAddress;
-    gptBaseAddress = Gpt_BaseAddress[Channel];
+    gptBaseAddress = Gpt_BaseAddress[Copy_GPTChannel];
 
     GPTMCTL(gptBaseAddress) &= (~(1 << TAEN));
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void GPT_Attach(GPT_Notification CallBack,GPT_ValueType Value)
+ * \Description     : This Function is used to make user only attach the callback function + Value of time in milliseconds 
+ * 						if he wants to work with only one timer in his application
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
+ * \Parameters (in) : CallBack >> Callback Function that will be excuted when Timer interrupt is activated
+ * 					  ValueinMs	>> Value of Desired time to pass in milliseconds
  * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Return value:   : None
  *******************************************************************************/
-void GPT_Attach(GPT_Notification CallBack,GPT_ValueType Value)
+void GPT_Attach(GPT_Notification Copy_GPTCallBack,GPT_ValueType Copy_GPTValueinMs)
 {
 	
-	GPT_EnableNotification(GPT_16_32_BitTimer1,CallBack);
- 	GPT_StartTimer(GPT_16_32_BitTimer1,Value);
+	GPT_EnableNotification(GPT_16_32_BitTimer1,Copy_GPTCallBack);
+ 	GPT_StartTimer(GPT_16_32_BitTimer1,Copy_GPTValueinMs);
 }
+
+
 
 /************************************************************/
 

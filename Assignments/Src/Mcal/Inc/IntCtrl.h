@@ -5,7 +5,7 @@
  *         File:  IntCrtl.h
  *       Module:  IntCrtl
  *
- *  Description:  header file for IntCrtl Module    
+ *  Description:  Header File that include all prototypes of functions in This Driver   
  *  
  *********************************************************************************************************************/
 #ifndef IntCrtl_H

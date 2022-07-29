@@ -2,10 +2,10 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  <Write File Name>
- *       Module:  -
+ *         File:  EXTI.h
+ *       Module:  EXTI
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  Header File that include all prototypes of functions in This Driver    
  *  
  *********************************************************************************************************************/
 #ifndef EXTI_H
@@ -39,10 +39,25 @@
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
-void EXTI_AttachInterrupt(EXTI_ChannelType Copy_EXTI_Channel,EXTI_SenseType Copy_EXTI_Sense,EXTI_CallBackFunctionType Copy_EXTI_CallBackFunction);
+
+/******************************************************************************
+ * \Syntax          : void EXTI_AttachInterrupt(EXTI_ChannelType Copy_EXTI_Channel, EXTI_SenseType Copy_EXTI_Sense, EXTI_CallBackFunctionType Copy_EXTI_CallBackFunction)
+ * \Description     : This Function is used to attach a callback function to the desired pin. it initializes and configures the pin as External interrupt
+ *
+ * \Sync\Async      : Synchronous
+ * \Reentrancy      : Non Reentrant
+ * \Parameters (in) : Copy_EXTI_Channel >>   Specific Channel that Wanted to be interrupt activated
+ *                    Copy_EXTI_Sense   >>   Type of interrupt activation sense (level,edge)(high,low,both)
+ *                    Copy_EXTI_CallBackFunction >> Callback Function that will be excuted when interrupt is activated
+ * \Parameters (out): None
+ * \Return value:   : None
+ *******************************************************************************/
+
+
+void EXTI_AttachInterrupt(EXTI_ChannelType Copy_EXTI_Channel, EXTI_SenseType Copy_EXTI_Sense, EXTI_CallBackFunctionType Copy_EXTI_CallBackFunction);
  
-#endif  /* FILE_NAME_H */
+#endif  /* EXTI_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: Std_Types.h
+ *  END OF FILE: EXTI.h
  *********************************************************************************************************************/

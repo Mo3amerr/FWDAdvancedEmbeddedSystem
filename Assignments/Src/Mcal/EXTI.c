@@ -41,15 +41,16 @@ EXTI_CallBackFunctionType CallBackFunctionArr[NUM_OF_PORTS] = {NULL_PTR};
  *********************************************************************************************************************/
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void EXTI_AttachInterrupt(EXTI_ChannelType Copy_EXTI_Channel, EXTI_SenseType Copy_EXTI_Sense, EXTI_CallBackFunctionType Copy_EXTI_CallBackFunction)
+ * \Description     : This Function is used to attach a callback function to the desired pin. it initializes and configures the pin as External interrupt
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
+ * \Parameters (in) : Copy_EXTI_Channel >>   Specific Channel that Wanted to be interrupt activated
+ *                    Copy_EXTI_Sense   >>   Type of interrupt activation sense (level,edge)(high,low,both)
+ *                    Copy_EXTI_CallBackFunction >> Callback Function that will be excuted when interrupt is activated
  * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Return value:   : None
  *******************************************************************************/
 void EXTI_AttachInterrupt(EXTI_ChannelType Copy_EXTI_Channel, EXTI_SenseType Copy_EXTI_Sense, EXTI_CallBackFunctionType Copy_EXTI_CallBackFunction)
 {
@@ -134,6 +135,9 @@ void EXTI_AttachInterrupt(EXTI_ChannelType Copy_EXTI_Channel, EXTI_SenseType Cop
     CallBackFunctionArr[LocalPort] = Copy_EXTI_CallBackFunction; // put function if callback mode
     GPIO_GPIOIM(LocalBaseAddress) |= (1<<Copy_EXTI_Channel%8); // Enable interrupt
 }
+
+
+
 
 
 void GPIOA_Handler(void)

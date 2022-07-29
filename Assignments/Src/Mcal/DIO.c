@@ -1,10 +1,11 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  FileName.c
- *        \brief
+/**        \file  DIO.c
+ *        \brief    Digital Input Output Driver
  *
- *      \details
+ *      \details    This Driver Controls all DIO functions whether to read or write Channels 
+ *                  or you can read and write in whole Ports
  *
  *
  *********************************************************************************************************************/
@@ -43,20 +44,20 @@
  *********************************************************************************************************************/
 
 /******************************************************************************
- * \Syntax          : DIO_LevelType DIO_ReadChannel(DIO_ChannelType ChannelId)
+ * \Syntax          : DIO_LevelType DIO_ReadChannel(DIO_ChannelType Copy_DIO_ChannelId)
  * \Description     : This function is used to read channels of DIO Ports and return High or low Value
  *
  * \Sync\Async      : Synchronous
  * \Reentrancy      : Non Reentrant
- * \Parameters (in) : ChannelId >>  Number of Channel wanted to be read
+ * \Parameters (in) : Copy_DIO_ChannelId >>  Number of Channel wanted to be read
  * \Parameters (out): State of This Channel
  * \Return value:   : HIGH/LOW
  *******************************************************************************/
-DIO_LevelType DIO_ReadChannel(DIO_ChannelType ChannelId)
+DIO_LevelType DIO_ReadChannel(DIO_ChannelType Copy_DIO_ChannelId)
 {
     volatile uint32 LocalBaseAddress;
     DIO_LevelType DIO_ReturnValue = 0;
-    switch (ChannelId)
+    switch (Copy_DIO_ChannelId)
     {
     case DIO_Channel_A0 ... DIO_Channel_A7:
         LocalBaseAddress = GPIOA_APB_BASE_ADDRESS_MASK;
@@ -80,7 +81,7 @@ DIO_LevelType DIO_ReadChannel(DIO_ChannelType ChannelId)
     default:
         break;
     }
-    DIO_ReturnValue = (*(volatile uint32 *)(LocalBaseAddress + (1 << (ChannelId % 8))));
+    DIO_ReturnValue = (*(volatile uint32 *)(LocalBaseAddress + (1 << (Copy_DIO_ChannelId % 8))));
 
     if (DIO_ReturnValue == DIO_LevelLow)
     {
@@ -93,20 +94,21 @@ DIO_LevelType DIO_ReadChannel(DIO_ChannelType ChannelId)
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void DIO_WrtieChannel(DIO_ChannelType Copy_DIO_ChannelId, DIO_LevelType Copy_DIO_Level)
+ * \Description     : This function is used to write on channels of DIO Ports
+ *                      by Putting High or low Value on the pin
  *
  * \Sync\Async      : Synchronous
- * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
- * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Reentrancy      : Reentrant
+ * \Parameters (in) : Copy_DIO_ChannelId >>  Number of Channel wanted to be read
+ *                      Copy_DIO_Level   >> Type of Copy_DIO_Level you want to Set this pin with 
+ * \Parameters (out): none
+ * \Return value:   : none
  *******************************************************************************/
-void DIO_WrtieChannel(DIO_ChannelType ChannelId, DIO_LevelType Level)
+void DIO_WrtieChannel(DIO_ChannelType Copy_DIO_ChannelId, DIO_LevelType Copy_DIO_Level)
 {
     volatile uint32 LocalBaseAddress;
-    switch (ChannelId)
+    switch (Copy_DIO_ChannelId)
     {
     case DIO_Channel_A0 ... DIO_Channel_A7:
         LocalBaseAddress = GPIOA_APB_BASE_ADDRESS_MASK;
@@ -128,24 +130,24 @@ void DIO_WrtieChannel(DIO_ChannelType ChannelId, DIO_LevelType Level)
         break;
     }
 
-    (*(volatile uint32 *)(LocalBaseAddress + (1 << ((ChannelId % 8) + 2)))) = Level * 255;
+    (*(volatile uint32 *)(LocalBaseAddress + (1 << ((Copy_DIO_ChannelId % 8) + 2)))) = Copy_DIO_Level * 255;
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : DIO_PortLevelType DIO_ReadPort(DIO_PortType Copy_DIO_PortId)
+ * \Description     : This function is used to read DIO Ports and return Whole Value of Pins all together
  *
  * \Sync\Async      : Synchronous
- * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
- * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Reentrancy      : Reentrant
+ * \Parameters (in) : Copy_DIO_PortId >>  Type of Port wanted to be read
+ * \Parameters (out): GPIO_GPIODATA(LocalBaseAddress)
+ *                      >> Value of Register Holding the values of the port pins all together
+ * \Return value:   : 0 : 255
  *******************************************************************************/
-DIO_PortLevelType DIO_ReadPort(DIO_PortType PortId)
+DIO_PortLevelType DIO_ReadPort(DIO_PortType Copy_DIO_PortId)
 {
     volatile uint32 LocalBaseAddress;
-    switch (PortId)
+    switch (Copy_DIO_PortId)
     {
     case DIO_PORTA:
         LocalBaseAddress = GPIOA_APB_BASE_ADDRESS_MASK;
@@ -171,20 +173,21 @@ DIO_PortLevelType DIO_ReadPort(DIO_PortType PortId)
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : void DIO_WritePort(DIO_PortType Copy_DIO_PortId, DIO_PortLevelType Copy_DIO_Level)
+ * \Description     : This function is used to write on DIO Ports
+ *                      by Putting Whole Values on the pin all together
  *
  * \Sync\Async      : Synchronous
- * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
- * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Reentrancy      : Reentrant
+ * \Parameters (in) : Copy_DIO_PortId    >>  Type of Port wanted to be read
+ *                      Copy_DIO_Level   >> Type of Copy_DIO_Level you want to Set this pin with 
+ * \Parameters (out): none
+ * \Return value:   : none
  *******************************************************************************/
-void DIO_WritePort(DIO_PortType PortId, DIO_PortLevelType Level)
+void DIO_WritePort(DIO_PortType Copy_DIO_PortId, DIO_PortLevelType Copy_DIO_Level)
 {
     volatile uint32 LocalBaseAddress;
-    switch (PortId)
+    switch (Copy_DIO_PortId)
     {
     case DIO_PORTA:
         LocalBaseAddress = GPIOA_APB_BASE_ADDRESS_MASK;
@@ -206,24 +209,25 @@ void DIO_WritePort(DIO_PortType PortId, DIO_PortLevelType Level)
         break;
     }
 
-    GPIO_GPIODATA(LocalBaseAddress) = Level;
+    GPIO_GPIODATA(LocalBaseAddress) = Copy_DIO_Level;
 }
 
 /******************************************************************************
- * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
- * \Description     : Describe this service
+ * \Syntax          : DIO_LevelType DIO_FlipChannel(DIO_ChannelType Copy_DIO_ChannelId)
+ * \Description     : This function is used to Flip Value on channels of DIO Ports
+ *                      by Putting High or low Value on the pin
  *
  * \Sync\Async      : Synchronous
- * \Reentrancy      : Non Reentrant
- * \Parameters (in) : parameterName   Parameter Describtion
- * \Parameters (out): None
- * \Return value:   : Std_ReturnType  E_OK
- *                                    E_NOT_OK
+ * \Reentrancy      : Reentrant
+ * \Parameters (in) : Copy_DIO_ChannelId >>  Number of Channel wanted to be read
+ *
+ * \Parameters (out): none
+ * \Return value:   : none
  *******************************************************************************/
-DIO_LevelType DIO_FlipChannel(DIO_ChannelType ChannelId)
+void DIO_FlipChannel(DIO_ChannelType Copy_DIO_ChannelId)
 {
     volatile uint32 LocalBaseAddress;
-    switch (ChannelId)
+    switch (Copy_DIO_ChannelId)
     {
     case DIO_Channel_A0 ... DIO_Channel_A7:
         LocalBaseAddress = GPIOA_APB_BASE_ADDRESS_MASK;
@@ -245,7 +249,7 @@ DIO_LevelType DIO_FlipChannel(DIO_ChannelType ChannelId)
         LocalBaseAddress = GPIOF_APB_BASE_ADDRESS_MASK;
         break;
     }
-    TOG_BIT(GPIO_GPIODATA(LocalBaseAddress), (ChannelId % 8));
+    TOG_BIT(GPIO_GPIODATA(LocalBaseAddress), (Copy_DIO_ChannelId % 8));
 }
 
 /**********************************************************************************************************************

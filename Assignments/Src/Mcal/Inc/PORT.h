@@ -2,10 +2,10 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  <Write File Name>
- *       Module:  -
+ *         File:  PORT.h
+ *       Module:  PORT
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  Header File that include all prototypes of functions in This Driver     
  *  
  *********************************************************************************************************************/
 #ifndef PORT_H
@@ -41,10 +41,23 @@
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
+
+
+/******************************************************************************
+ * \Syntax          : void PORT_Init (const Port_ConfigType* ConfigPtr[counter] )
+ * \Description     : This Function is used to Initialize Ports as they are used to be in our Application
+ *
+ * \Sync\Async      : Synchronous
+ * \Reentrancy      : Non Reentrant
+ * \Parameters (in) : ConfigPtr[counter] >> Pointer to Struct that carries the whole data of ports
+ * \Parameters (out): None
+ * \Return value:   : None
+ *******************************************************************************/
+
 void PORT_Init (const Port_ConfigType* ConfigPtr );
  
-#endif  /* FILE_NAME_H */
+#endif  /* PORT_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: Std_Types.h
+ *  END OF FILE: PORT.h
  *********************************************************************************************************************/
