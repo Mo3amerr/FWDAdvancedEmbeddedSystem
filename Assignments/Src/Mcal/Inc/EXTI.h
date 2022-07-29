@@ -8,14 +8,13 @@
  *  Description:  <Write File DESCRIPTION here>     
  *  
  *********************************************************************************************************************/
-#ifndef GPT_H
-#define GPT_H
+#ifndef EXTI_H
+#define EXTI_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
-#include "GPT_Types.h"
-#include "GPT_Cfg.h"
+#include"EXTI_Types.h"
 
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
@@ -40,28 +39,8 @@
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
-void GPT_Init(const GPT_ConfigType* ConfigPtr);
-
-void GPT_DisableNotification(GPT_ChannelType Channel);
-
-void GPT_EnableNotification(GPT_ChannelType Channel, GPT_Notification CallBack);
-
-GPT_ValueType Gpt_GetTimeElapsed( GPT_ChannelType Channel );
-
-void GPT_StartTimer(GPT_ChannelType Channel, GPT_ValueType Value);
-
-void GPT_StopTimer(GPT_ChannelType Channel);
-
-void GPT_Attach(GPT_Notification CallBack,GPT_ValueType Value);
-
-void TIMER0A_Handler(void);
-void TIMER1A_Handler(void);
-void TIMER2A_Handler(void);
-void TIMER3A_Handler(void);
-void TIMER4A_Handler(void);
-void TIMER5A_Handler(void);
-
-
+void EXTI_AttachInterrupt(EXTI_ChannelType Copy_EXTI_Channel,EXTI_SenseType Copy_EXTI_Sense,EXTI_CallBackFunctionType Copy_EXTI_CallBackFunction);
+ 
 #endif  /* FILE_NAME_H */
 
 /**********************************************************************************************************************

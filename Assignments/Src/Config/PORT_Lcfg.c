@@ -31,13 +31,11 @@
  *********************************************************************************************************************/
 const Port_ConfigType ConfigPtr[NUM_OF_PINS_ACTIVE]=
 {
-    
-    {PORT_Channel_F1,Port_DIO,Port_Output,Port_NoAttach,Port_8maCurrent},
+    // {PORT_Channel_F0,Port_DIO,Port_Input,Port_PullUpResistor,Port_8maCurrent},
     {PORT_Channel_F2,Port_DIO,Port_Output,Port_NoAttach,Port_8maCurrent},
-    {PORT_Channel_F3,Port_DIO,Port_Output,Port_NoAttach,Port_8maCurrent},
-   
-   
-  
+    {PORT_Channel_B0,Port_DIO,Port_Input,Port_PullDownResistor,Port_8maCurrent},
+    {PORT_Channel_F4,Port_DIO,Port_Input,Port_PullUpResistor,Port_8maCurrent},
+    {PORT_Channel_F0,Port_DIO,Port_Input,Port_PullUpResistor,Port_8maCurrent}
 };
 /**********************************************************************************************************************
  *  LOCAL FUNCTION PROTOTYPES

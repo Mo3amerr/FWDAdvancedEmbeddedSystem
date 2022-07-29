@@ -87,16 +87,18 @@ void GPT_Init(const GPT_ConfigType *ConfigPtr)
 		
 		gptBaseAddress = Gpt_BaseAddress[locChannel];
 
-
+		/*RESET*/
 		GPTMCTL(gptBaseAddress) =	0;
 		
 		/*
-		* For a 16/32-bit timer, this value selects the 16-bit timer configuration.
+		* For a 16/32-bit timer, this value selects the 16-bit timer configuration. 
 		* For a 32/64-bit wide timer, this value selects the 32-bit timer configuration.
-		*/
-		GPTMCFG(gptBaseAddress) = 0x0;
+		*/ /*Concatinated  0x00
+			Non Concatinated 0x04  */
+		GPTMCFG(gptBaseAddress) = 0x00;
 		
-		/* counting down */
+		/* counting down  0
+			Count Up 1						*/
 		GPTMTAMR(gptBaseAddress) &= ~(1<<TACDIR);
 		
 		/* channel mode */
@@ -240,25 +242,8 @@ void GPT_StartTimer(GPT_ChannelType Channel, GPT_ValueType Value)
 		}
 	}
 	
-	prescale = 16000000 / locChannelTickFreq;
-	
-	for(i=2;;i*=2)
-	{
-		if(prescale/i == 1)
-		{
-			if(prescale%i <= (i/2))
-			{
-				prescale = i;
-			}
-			else
-			{
-				prescale = i*2;
-			}
-			break;
-		}
-	}
 	/* adding the value deppending on the freq required */
-	GPTMTAILR(gptBaseAddress) = Value * prescale;
+	GPTMTAILR(gptBaseAddress) = Value*16000;
 	
 	GPTMCTL(gptBaseAddress) |= (1<<TAEN);
 }
@@ -282,7 +267,25 @@ void GPT_StopTimer(GPT_ChannelType Channel)
     GPTMCTL(gptBaseAddress) &= (~(1 << TAEN));
 }
 
+/******************************************************************************
+ * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)
+ * \Description     : Describe this service
+ *
+ * \Sync\Async      : Synchronous
+ * \Reentrancy      : Non Reentrant
+ * \Parameters (in) : parameterName   Parameter Describtion
+ * \Parameters (out): None
+ * \Return value:   : Std_ReturnType  E_OK
+ *                                    E_NOT_OK
+ *******************************************************************************/
+void GPT_Attach(GPT_Notification CallBack,GPT_ValueType Value)
+{
+	
+	GPT_EnableNotification(GPT_16_32_BitTimer1,CallBack);
+ 	GPT_StartTimer(GPT_16_32_BitTimer1,Value);
+}
 
+/************************************************************/
 
 void TIMER0A_Handler(void)
 {
@@ -297,7 +300,7 @@ void TIMER0A_Handler(void)
 
 void TIMER1A_Handler(void)
 {
-	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer1]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER1A;
 	if (locGptNotification[GPT_16_32_BitTimer1] != NULL)
 	{
@@ -308,7 +311,7 @@ void TIMER1A_Handler(void)
 
 void TIMER2A_Handler(void)
 {
-	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer2]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER2A;
 	if (locGptNotification[GPT_16_32_BitTimer2] != NULL)
 	{
@@ -319,7 +322,7 @@ void TIMER2A_Handler(void)
 
 void TIMER3A_Handler(void)
 {
-	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer3]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER3A;
 	if (locGptNotification[GPT_16_32_BitTimer3] != NULL)
 	{
@@ -330,7 +333,7 @@ void TIMER3A_Handler(void)
 
 void TIMER4A_Handler(void)
 {
-	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer0]) |= 1<<0;
+	GPTMICR(Gpt_BaseAddress[GPT_16_32_BitTimer4]) |= 1<<0;
 	static GPT_Notification gptNotificationFn_TIMER4A;
 	if (locGptNotification[GPT_16_32_BitTimer4] != NULL)
 	{
@@ -349,6 +352,78 @@ void TIMER5A_Handler(void)
 		gptNotificationFn_TIMER5A();
 	}
 }
+
+
+
+
+void WTIMER0A_Handler(void)
+{
+	GPTMICR(Gpt_BaseAddress[GPT_32_64_BitWideTimer0]) |= 1<<0;
+	static GPT_Notification gptNotificationFn_WTIMER0A;
+	if (locGptNotification[GPT_32_64_BitWideTimer0] != NULL)
+	{
+		gptNotificationFn_WTIMER0A = locGptNotification[GPT_32_64_BitWideTimer0];
+		gptNotificationFn_WTIMER0A();
+	}
+}
+
+void WTIMER1A_Handler(void)
+{
+	GPTMICR(Gpt_BaseAddress[GPT_32_64_BitWideTimer1]) |= 1<<0;
+	static GPT_Notification gptNotificationFn_WTIMER1A;
+	if (locGptNotification[GPT_32_64_BitWideTimer1] != NULL)
+	{
+		gptNotificationFn_WTIMER1A = locGptNotification[GPT_32_64_BitWideTimer1];
+		gptNotificationFn_WTIMER1A();
+	}
+}
+
+
+void WTIMER2A_Handler(void)
+{
+	GPTMICR(Gpt_BaseAddress[GPT_32_64_BitWideTimer2]) |= 1<<0;
+	static GPT_Notification gptNotificationFn_WTIMER2A;
+	if (locGptNotification[GPT_32_64_BitWideTimer2] != NULL)
+	{
+		gptNotificationFn_WTIMER2A = locGptNotification[GPT_32_64_BitWideTimer2];
+		gptNotificationFn_WTIMER2A();
+	}
+}
+
+
+void WTIMER3A_Handler(void)
+{
+	GPTMICR(Gpt_BaseAddress[GPT_32_64_BitWideTimer3]) |= 1<<0;
+	static GPT_Notification gptNotificationFn_WTIMER3A;
+	if (locGptNotification[GPT_32_64_BitWideTimer3] != NULL)
+	{
+		gptNotificationFn_WTIMER3A = locGptNotification[GPT_32_64_BitWideTimer3];
+		gptNotificationFn_WTIMER3A();
+	}
+}
+
+void WTIMER4A_Handler(void)
+{
+	GPTMICR(Gpt_BaseAddress[GPT_32_64_BitWideTimer4]) |= 1<<0;
+	static GPT_Notification gptNotificationFn_WTIMER4A;
+	if (locGptNotification[GPT_32_64_BitWideTimer4] != NULL)
+	{
+		gptNotificationFn_WTIMER4A = locGptNotification[GPT_32_64_BitWideTimer4];
+		gptNotificationFn_WTIMER4A();
+	}
+}
+
+void WTIMER5A_Handler(void)
+{
+	GPTMICR(Gpt_BaseAddress[GPT_32_64_BitWideTimer5]) |= 1<<0;
+	static GPT_Notification gptNotificationFn_WTIMER5A;
+	if (locGptNotification[GPT_32_64_BitWideTimer5] != NULL)
+	{
+		gptNotificationFn_WTIMER5A = locGptNotification[GPT_32_64_BitWideTimer5];
+		gptNotificationFn_WTIMER5A();
+	}
+}
+
 
 /**********************************************************************************************************************
  *  END OF FILE: FileName.c
