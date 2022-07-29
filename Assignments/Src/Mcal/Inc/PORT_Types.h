@@ -2,10 +2,11 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  <Write File Name>
- *       Module:  -
+ *         File:  Port_Types.h
+ *       Module:  Port
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  This is a header file to introduce the driver types to the user 
+ *                so he and the developer can use it in this driver   
  *  
  *********************************************************************************************************************/
 #ifndef PORT_TYPES_H
@@ -30,6 +31,14 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
+
+/*
+
+This is a type for Writing Channels in the PORT Driver. Starting from A0 to F4
+
+*/
+
+
 typedef enum 
 {
 PORT_Channel_A0 ,
@@ -78,8 +87,13 @@ PORT_Channel_F4
 
 }Port_ChannelType;
 
+ /*
 
+This is a type for Writing type of the pin 
+which you'd like to use in your application in the Port Driver. 
 
+*/
+ 
 typedef enum 
 {
   Port_DIO,
@@ -92,17 +106,40 @@ typedef enum
 }Port_PinType;
 
 
+/*
+
+This is a type for Writing Pin Direction of each Pin in the Port Driver. 
+Input or Output
+
+*/
+
 typedef enum
 {
 Port_Input,
 Port_Output
 }Port_PinDirectionType;
 
+
+/*
+
+This is A type for Writing Channel Levels in the Port Driver. High or Low
+
+*/
+
+
+
 typedef enum
 {
 Port_LowLevel=0 ,
 Port_HighLevel 
 }Port_PinLevelValueType;
+
+/*
+
+This is A type for Writing the type of attachment for the input pins in the PORT Driver. 
+
+*/
+
 
 typedef enum
 {
@@ -113,6 +150,12 @@ Port_NoAttach
 
 }Port_PinInternalAttachType;
 
+/*
+
+This is A type for Writing the type of output current for the output pins in the PORT Driver. 
+
+*/
+
 typedef enum
 {
 Port_2maCurrent ,
@@ -120,7 +163,11 @@ Port_4maCurrent ,
 Port_8maCurrent 
 }Port_PinOutputCurrentType;
 
+/*
 
+This is a struct to collect all the information desired for Pins to work properly in this Port Driver.
+
+*/
 
 typedef struct 
 {
@@ -147,8 +194,8 @@ typedef struct
  *********************************************************************************************************************/
 
  
-#endif  /* FILE_NAME_H */
+#endif  /* PORT_TYPES_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: Std_Types.h
+ *  END OF FILE: Port_Types.h
  *********************************************************************************************************************/

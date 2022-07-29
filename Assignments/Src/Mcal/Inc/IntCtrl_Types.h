@@ -3,9 +3,10 @@
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
  *         File:  IntCtrl_Types.h
- *       Module:  -
+ *       Module:  IntCtrl
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  This is a header file to introduce the driver types to the user 
+ *                so he and the developer can use it in this driver     
  *  
  *********************************************************************************************************************/
 #ifndef INTCTRL_TYPES_H
@@ -33,6 +34,14 @@ in the register to identify the grouping and subgrouping system */
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
+
+/*
+
+This is a type for Nvic Interrupt thar are there in this IntCtrl Driver.
+Each one has the Offset to bu used and called with
+
+*/
+
 typedef enum
 {
     NVIC_GPIO_PORT_A                ,
@@ -115,9 +124,23 @@ typedef enum
     NVIC_PWM_1_FAULT
 }NVIC_InterruptsType;
 
+
+/*
+
+Those Types are used to Identify Group and SubGroup Priority
+
+*/
+
 typedef uint8 NVIC_GroupPriorityType;
 typedef uint8 NVIC_SubGroupPriorityType;
  
+
+/*
+
+This is a struct to collect all the information desired 
+for a Timer to work properly in this IntCtrl Driver.
+
+*/
 
  typedef struct 
  {

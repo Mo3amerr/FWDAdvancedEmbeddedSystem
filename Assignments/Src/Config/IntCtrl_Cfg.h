@@ -3,9 +3,9 @@
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
  *         File:  IntCtrl_Cfg.h
- *       Module:  -
+ *       Module:  IntCtrl
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  Header file to write the fixed parameters that the user will write one time    
  *  
  *********************************************************************************************************************/
 #ifndef INTCTRL_CFG_H

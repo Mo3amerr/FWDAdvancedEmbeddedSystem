@@ -1,10 +1,10 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  FileName.c
- *        \brief  
+/**        \file  main.c
+ *        \brief  application layer main file
  *
- *      \details  
+ *      \details  this is where you can write your main code , callback functions to be added here.
  *
  *
  *********************************************************************************************************************/
@@ -54,16 +54,19 @@ int main (void)
   	RCGCTIMER |= 1<<0; //clock at timer 0
 	RCGCWTIMER |= 1<<1; // clock at Wtimer1
 	
+	/*Clear Lock to Activate Pin 0 of PORT F*/
 	GPIO_GPIOLOCK(GPIOF_APB_BASE_ADDRESS_MASK) = 0x4C4F434B;
   while (GPIO_GPIOLOCK(GPIOF_APB_BASE_ADDRESS_MASK))
   {
   }
   SET_BIT(GPIO_GPIOCR(GPIOF_APB_BASE_ADDRESS_MASK),0);
 
+
+
  IntCrtl_Init();
- PORT_Init(ConfigPtr);
+ PORT_Init(Port_ConfigPtr);
  GPT_Init(GPT_Config_Array);
- GPT_Attach(FlipChannel,500);
+ GPT_Attach(FlipChannel,1000); // time is in ms
  EXTI_AttachInterrupt(EXTI_Channel_F4,EXTI_SenseFallingEdge,ChangeOnAndOffTime);
  EXTI_AttachInterrupt(EXTI_Channel_F0,EXTI_SenseFallingEdge,ChangeOnAndOffTime);
 

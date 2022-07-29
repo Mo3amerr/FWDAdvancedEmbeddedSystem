@@ -2,10 +2,10 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  <Write File Name>
- *       Module:  -
+ *         File:  GPT_Cfg.h
+ *       Module:  GPT
  *
- *  Description:  <Write File DESCRIPTION here>
+ *  Description:  Header file to write the fixed parameters that the user will write one time
  *
  *********************************************************************************************************************/
 #ifndef GPT_CFG_H
@@ -57,8 +57,8 @@ extern const GPT_ConfigType GPT_Config_Array[NUM_ACTIVE_TIMERS];
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 
-#endif /* FILE_NAME_H */
+#endif /* GPT_CFG_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: Std_Types.h
+ *  END OF FILE: GPT_Cfg.h
  *********************************************************************************************************************/

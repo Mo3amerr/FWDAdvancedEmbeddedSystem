@@ -5,7 +5,8 @@
  *         File:  DIO_Types.h
  *       Module:  DIO
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  This is a header file to introduce the driver types to the user 
+ *                so he and the developer can use it in this driver  
  *  
  *********************************************************************************************************************/
 #ifndef DIO_TYPES_H
@@ -29,6 +30,13 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
+
+
+/*
+
+This is A type for Writing Channels in the DIO Driver. Starting from A0 to F4
+
+*/
 typedef enum 
 {
 DIO_Channel_A0 ,
@@ -79,6 +87,12 @@ DIO_Channel_F5
 }DIO_ChannelType;
 
 
+/*
+
+This is a type for Writing Ports in the DIO Driver. Starting from A to F
+
+*/
+
 typedef enum
 {
     DIO_PORTA ,
@@ -89,11 +103,24 @@ typedef enum
     DIO_PORTF
 }DIO_PortType;
 
+/*
+
+This is A type for Writing Channel Levels in the DIO Driver. High or Low
+
+*/
+
 typedef enum
 {
     DIO_LevelLow=0 ,
     DIO_LevelHigh=1
 }DIO_LevelType;
+
+
+/*
+
+This is A type for Writing Port Levels in the DIO Driver. From 0 to 255
+
+*/
 
 typedef uint8 DIO_PortLevelType;
 
@@ -107,8 +134,8 @@ typedef uint8 DIO_PortLevelType;
  *********************************************************************************************************************/
 
  
-#endif  /* FILE_NAME_H */
+#endif  /* DIO_TYPES_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: Std_Types.h
+ *  END OF FILE: DIO_Types.h
  *********************************************************************************************************************/

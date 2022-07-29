@@ -2,10 +2,11 @@
 
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  <Write File Name>
- *       Module:  -
+ *         File:  EXTI_Types.h
+ *       Module:  EXTI
  *
- *  Description:  <Write File DESCRIPTION here>     
+ *  Description:  This is a header file to introduce the driver types to the user 
+ *                so he and the developer can use it in this driver     
  *  
  *********************************************************************************************************************/
 #ifndef EXTI_TYPES_H
@@ -19,6 +20,15 @@
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
+/*
+
+This Macro is used to indicate the number of Ports in the Micro Controller
+In our case : A B C D E F = 6 Ports 
+Written in a way (Number + u)  eg. (6u)
+
+*/
+
+
 #define NUM_OF_PORTS  (6u)
 
 /**********************************************************************************************************************
@@ -29,6 +39,15 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
+
+
+/*
+
+This is a type for Writing Channels in the EXTI Driver. Starting from A0 to F4
+
+*/
+
+
 typedef enum 
 {
 EXTI_Channel_A0 ,
@@ -77,7 +96,24 @@ EXTI_Channel_F4 ,
 EXTI_Channel_F5
 }EXTI_ChannelType;
 
+/*
+
+This is a type for CallBackFunction Pointers in the EXTI Driver. 
+Used with functions to pass functions as arguments.
+
+*/
+
 typedef void (*EXTI_CallBackFunctionType)();
+
+
+/*
+
+This is a type for Writing The Sense of you Pin in the EXTI Driver.
+Options are : Level {High,Low}
+              Edge {Rising,Falling}
+              Both Edges
+
+*/
 
 
 typedef enum
@@ -89,6 +125,13 @@ EXTI_SenseFallingEdge,
 EXTI_SenseBothEdges
 }EXTI_SenseType;
 
+
+/*
+
+This is a type for Writing Ports in the EXTI Driver. 
+Starting from A to F
+
+*/
 
 typedef enum
 {
@@ -110,8 +153,8 @@ EXTI_PORTF
  *********************************************************************************************************************/
 
  
-#endif  /* FILE_NAME_H */
+#endif  /* EXTI_TYPES_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: Std_Types.h
+ *  END OF FILE: EXTI_Types.h
  *********************************************************************************************************************/
